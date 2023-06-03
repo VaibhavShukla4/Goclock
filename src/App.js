@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 
+// this is for protected routes
 const ProtectedLayout = ({ children }) => {
   const auth = localStorage.getItem("auth_token");
   return auth ? (
