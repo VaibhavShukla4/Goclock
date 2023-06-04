@@ -80,11 +80,11 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
             setMessages([responseData]);
           }
         }
+        fetchData();
       })
       .catch((error) => {
         console.log(error);
       });
-    fetchData();
   };
 
   // Call the function to send the data
@@ -115,11 +115,11 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
             setMessages([responseData]);
           }
         }
+        fetchData();
       })
       .catch((error) => {
         console.log(error);
       });
-    fetchData();
   };
 
   const Logout = () => {
@@ -177,6 +177,7 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
         quantity={quantity}
         setQuantity={setQuantity}
         address={address}
+        setAddress={setAddress}
         setTransporter={setTransporter}
       />
       <div className="mb-8">

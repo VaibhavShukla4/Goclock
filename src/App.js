@@ -46,7 +46,14 @@ function App() {
       >
         <Route
           index
-          element={<Home mode={mode} CiDark={CiDark} CiLight={CiLight} />}
+          element={
+            <Home
+              mode={mode}
+              CiDark={CiDark}
+              CiLight={CiLight}
+              setMode={setMode}
+            />
+          }
         />
       </Route>
       <Route

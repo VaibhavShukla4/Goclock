@@ -21,7 +21,7 @@ const LandingPage = ({ mode, setMode, CiDark, CiLight }) => {
                   mode ? " text-white" : "text-black"
                 } text-center  text-3xl italic w-max `}
               >
-                Welcome ToDo Notes
+                Welcome
               </span>
             </p>
           </div>
