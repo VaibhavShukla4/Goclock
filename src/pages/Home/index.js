@@ -31,6 +31,7 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
       .then((response) => {
         if (response.status === 200) {
           const responseData = response.data;
+          // console.log(responseData);
           if (Array.isArray(responseData)) {
             setMessages(responseData);
           } else if (typeof responseData === "object") {

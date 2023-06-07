@@ -154,12 +154,12 @@ const Login = ({ mode, setMode, CiDark, CiLight }) => {
                   mode ? "text-white" : "text-gray-600"
                 }`}
               >
-                {show ? "Not a member? " : " Already a member?"}&nbsp;&nbsp;
+                {show ? " Already a member?" : "Not a member? "}&nbsp;&nbsp;
                 <span
                   className="mb-1 text-xl sm:text-xl tracking-wide cursor-pointer text-indigo-600"
                   onClick={() => navigate("/signup")}
                 >
-                  {show ? "Signup" : "Login"}
+                  {show ? "Login" : " Signup"}
                 </span>
               </p>
             </div>
