@@ -5,9 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { ROLE, AUTH_TOKEN_KEY } from "../../constant";
 import { loginUser } from "../../api/api";
 import { AiOutlineUser, AiOutlineLock } from "react-icons/ai";
+import { useToasts } from "react-toast-notifications";
 
 let auth;
 const Login = ({ mode, setMode, CiDark, CiLight }) => {
+  const { addToast } = useToasts();
   const [messages, setMessages] = useState([]);
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState("");
@@ -35,7 +37,8 @@ const Login = ({ mode, setMode, CiDark, CiLight }) => {
       setPassword("");
       loginUser(newMessage)
         .then((response) => {
-          console.log(response.data); // Log the response data
+          // console.log(response.data); // Log the response data
+          addToast("Login Successfully!", { appearance: "success" });
           if (response.status === 200) {
             const authToken = response.data.token;
             localStorage.setItem(AUTH_TOKEN_KEY, authToken);
@@ -43,19 +46,21 @@ const Login = ({ mode, setMode, CiDark, CiLight }) => {
           }
         })
         .catch((error) => {
-          console.log(error);
+          addToast("Error!", { appearance: "error" });
         });
       setErrors({});
     } else {
       setErrors(errors);
     }
   };
+
   useEffect(() => {
     auth = localStorage.getItem("auth_token");
     if (auth) {
       navigate("/account");
     }
   }, []);
+
   return (
     <div
       className={` ${
@@ -68,7 +73,15 @@ const Login = ({ mode, setMode, CiDark, CiLight }) => {
             className={`${
               mode ? " text-white" : "text-black"
             } text-5xl rounded-xl border-solid border-2`}
-            onClick={() => setMode(!mode)}
+            onClick={() => {
+              setMode(!mode);
+              addToast(
+                mode
+                  ? "Light Mode Enable Successfully!"
+                  : "Dark Mode Enable Successfully!",
+                { appearance: "success" }
+              );
+            }}
           >
             {mode ? <CiDark /> : <CiLight />}
           </button>
@@ -137,7 +150,6 @@ const Login = ({ mode, setMode, CiDark, CiLight }) => {
                     )}
                   </div>
                 </div>
-
                 <div className="relative flex justify-center mt-6">
                   <button
                     className="text-white text-2xl italic rounded-md border-2 bg-gradient-to-r from-violet-600 to-blue-400 px-10  py-2 hover:bg-gradient-to-l from-blue-600 to-violet-400"
@@ -148,7 +160,6 @@ const Login = ({ mode, setMode, CiDark, CiLight }) => {
                   </button>
                 </div>
               </form>
-
               <p
                 className={`text-center text-lg pb-5 ${
                   mode ? "text-white" : "text-gray-600"

@@ -9,19 +9,59 @@ import {
   AiOutlineLock,
   AiOutlineUsergroupAdd,
 } from "react-icons/ai";
+import { useToasts } from "react-toast-notifications";
 let auth;
 
 const SignUp = ({ mode, setMode, CiDark, CiLight }) => {
+  const { addToast } = useToasts();
   const [messages, setMessages] = useState([]);
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState(ROLE.NONE); // Default role is set to manufacturer
   const [errors, setErrors] = useState({});
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [roleError, setRoleError] = useState("");
   const navigate = useNavigate();
+
+  const validateEmail = (email) => {
+    // Regular expression to validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+  const validatePassword = (password) => {
+    // Regular expression to validate password (minimum 8 characters)
+    const passwordRegex = /^.{8,}$/;
+    return passwordRegex.test(password);
+  };
+  const validRoles = ["MANUFACTURER", "TRANSPORTER"];
+  const validateRole = (role) => {
+    return validRoles.includes(role.toUpperCase());
+  };
 
   const handleSignUp = (e) => {
     e.preventDefault();
+    // Reset previous error messages
+    setEmailError("");
+    setPasswordError("");
+    setRoleError("");
+    // Validate email
+    if (!validateEmail(email)) {
+      setEmailError("Please enter a valid email address");
+      return;
+    }
+
+    // Validate password
+    if (!validatePassword(password)) {
+      setPasswordError("Password should be at least 8 characters long");
+      return;
+    }
+    // validate Role
+    if (!validateRole(role)) {
+      setRoleError("Role should be manufracturer otherwise transporter");
+      return;
+    }
     const errors = {};
     if (!email) {
       errors.email = "Email is required";
@@ -44,14 +84,13 @@ const SignUp = ({ mode, setMode, CiDark, CiLight }) => {
       setRole("");
       registerUser(newMessage)
         .then((response) => {
-          console.log(response.data);
-
+          addToast("SignUp Successfully!", { appearance: "success" });
           if (response.status === 200) {
             navigate("/login");
           }
         })
         .catch((error) => {
-          console.log(error);
+          addToast("Error!", { appearance: "error" });
         });
       setErrors({});
     } else {
@@ -72,7 +111,15 @@ const SignUp = ({ mode, setMode, CiDark, CiLight }) => {
               className={`${
                 mode ? " text-white" : "text-black"
               } text-5xl rounded-xl border-solid border-2`}
-              onClick={() => setMode(!mode)}
+              onClick={() => {
+                setMode(!mode);
+                addToast(
+                  mode
+                    ? "Light Mode Enable Successfully!"
+                    : "Dark Mode Enable Successfully!",
+                  { appearance: "success" }
+                );
+              }}
             >
               {mode ? <CiDark /> : <CiLight />}
             </button>
@@ -86,7 +133,10 @@ const SignUp = ({ mode, setMode, CiDark, CiLight }) => {
                 <div className="w-full h-1/3 flex justify-center items-center">
                   <p className="text-blue-600 text-5xl italic">Registration</p>
                 </div>
-                <form className="flex flex-col w-full h-full pl-3 pr-3">
+                <form
+                  className="flex flex-col w-full h-full pl-3 pr-3"
+                  onSubmit={handleSignUp}
+                >
                   <div className="flex flex-col mb-6">
                     <label
                       htmlFor="username"
@@ -111,6 +161,15 @@ const SignUp = ({ mode, setMode, CiDark, CiLight }) => {
                       />
                       {errors.email && (
                         <p className="text-red-500 text-sm">{errors.email}</p>
+                      )}
+                      {emailError && (
+                        <p
+                          className={
+                            passwordError ? "text-red-500" : "text-gray-400"
+                          }
+                        >
+                          {emailError}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -139,6 +198,15 @@ const SignUp = ({ mode, setMode, CiDark, CiLight }) => {
                       {errors.password && (
                         <p className="text-red-500 text-sm">
                           {errors.password}
+                        </p>
+                      )}
+                      {passwordError && (
+                        <p
+                          className={
+                            passwordError ? "text-red-500" : "text-gray-400"
+                          }
+                        >
+                          {passwordError}
                         </p>
                       )}
                     </div>
@@ -174,20 +242,26 @@ const SignUp = ({ mode, setMode, CiDark, CiLight }) => {
                       {errors.role && (
                         <p className="text-red-500 text-sm">{errors.role}</p>
                       )}
+                      {roleError && (
+                        <p
+                          className={
+                            roleError ? "text-red-500" : "text-gray-400"
+                          }
+                        >
+                          {roleError}
+                        </p>
+                      )}
                     </div>
                   </div>
-
                   <div className="relative flex justify-center mt-4">
                     <button
                       className="text-white text-2xl italic rounded-md border-2 bg-gradient-to-r from-violet-600 to-blue-400 px-10  py-2 hover:bg-gradient-to-l from-blue-600 to-violet-400"
-                      type="button"
-                      onClick={handleSignUp}
+                      type="submit"
                     >
                       Register
                     </button>
                   </div>
                 </form>
-
                 <p
                   className={`text-center text-lg pb-5 ${
                     mode ? "text-white" : "text-gray-600"

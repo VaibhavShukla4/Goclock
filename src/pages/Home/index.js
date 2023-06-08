@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from "react";
 import ManufacturerSection from "../../components/ManufacturerSection";
 import TransporterSection from "../../components/TransporterSection";
-import { getMessage, postMessage, postResponse } from "../../api/api";
+import {
+  getMessage,
+  getResponse,
+  postMessage,
+  postResponse,
+} from "../../api/api";
 import { useNavigate } from "react-router-dom";
+import { CgSpinner } from "react-icons/cg";
+import { useToasts } from "react-toast-notifications";
+
 const Home = ({ mode, setMode, CiDark, CiLight }) => {
+  const { addToast } = useToasts();
   const [messages, setMessages] = useState([]);
-  const [msg, setMsg] = useState("");
+  const [resp, setResp] = useState([]);
   const [searchOrderId, setSearchOrderId] = useState("");
   const [searchTo, setSearchTo] = useState("");
   const [searchFrom, setSearchFrom] = useState("");
@@ -16,21 +25,31 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
   const [address, setAddress] = useState("");
   const [transporter, setTransporter] = useState("");
   const [responseOrderId, setResponseOrderId] = useState("");
-  const [price, setPrice] = useState("");
+  const [price, setPrice] = useState(Number);
+  const [loading, setLoading] = useState(false);
+
+  const [msgLoading, setMsgLoading] = useState(false);
+  const [resLoading, setResLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
+    fetchResponse();
   }, []);
   const navigate = useNavigate();
   let data = messages[0];
-  const result = data?.messages;
+  let respData = resp[0];
+  console.log(respData);
+  // const result = data?.messages;
   // console.log(data?.messages);
 
   const fetchData = () => {
+    setLoading(false);
     getMessage()
       .then((response) => {
+        setMsgLoading(true);
         if (response.status === 200) {
           const responseData = response.data;
+          setMsgLoading(false);
           // console.log(responseData);
           if (Array.isArray(responseData)) {
             setMessages(responseData);
@@ -38,12 +57,31 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
             setMessages([responseData]);
           }
         }
+        setLoading(true);
       })
       .catch((error) => {
         console.log(error);
       });
   };
-
+  const fetchResponse = () => {
+    getResponse()
+      .then((response) => {
+        setResLoading(true);
+        if (response.status === 200) {
+          const responseData = response.data;
+          setResLoading(false);
+          // console.log(responseData);
+          if (Array.isArray(responseData)) {
+            setResp(responseData);
+          } else if (typeof responseData === "object") {
+            setResp([responseData]);
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   // Filter messages based on search criteria
   const filteredMessages = data?.messages?.filter(
     (message) =>
@@ -56,6 +94,7 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
   // Handle form submit for the manufacturer
   const handleManufacturerSubmit = async (e) => {
     e.preventDefault();
+    setMsgLoading(true);
     const newMessage = {
       id: messages.length + 1,
       orderId,
@@ -73,18 +112,25 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
     setTransporter("");
     postMessage(newMessage)
       .then((response) => {
+        addToast("Manufracturer Message Send Successfully!", {
+          appearance: "success",
+        });
         if (response.status === 200) {
           const responseData = response.data;
+
           if (Array.isArray(responseData)) {
             setMessages(responseData);
           } else if (typeof responseData === "object") {
             setMessages([responseData]);
           }
         }
+        setMsgLoading(false);
         fetchData();
       })
       .catch((error) => {
-        console.log(error);
+        addToast("Error!", {
+          appearance: "error",
+        });
       });
   };
 
@@ -92,6 +138,7 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
 
   const handleTransporterSubmit = async (e) => {
     e.preventDefault();
+    setResLoading(true);
     // Send the response back to the manufacturer
     // You can handle the response logic here
     const responseMessage = {
@@ -108,25 +155,38 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
     setPrice("");
     postResponse(responseMessage)
       .then((response) => {
+        addToast("Transporter Message Send Successfully!", {
+          appearance: "success",
+        });
         if (response.status === 200) {
           const responseData = response.data;
+
           if (Array.isArray(responseData)) {
             setMessages(responseData);
           } else if (typeof responseData === "object") {
             setMessages([responseData]);
           }
         }
+        setResLoading(false);
         fetchData();
       })
       .catch((error) => {
-        console.log(error);
+        addToast("Error!", {
+          appearance: "error",
+        });
       });
   };
 
   const Logout = () => {
-    localStorage.clear();
-    navigate("/login");
+    addToast("Logout Successfully!", {
+      appearance: "success",
+    });
+    setTimeout(() => {
+      localStorage.clear();
+      navigate("/login");
+    });
   };
+
   return (
     <div
       className={` mx-auto p-4 ${
@@ -145,7 +205,15 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
           className={`${
             mode ? " text-white" : "text-black"
           } text-5xl rounded-xl border-solid border-2`}
-          onClick={() => setMode(!mode)}
+          onClick={() => {
+            setMode(!mode);
+            addToast(
+              mode
+                ? "Light Mode Enable Successfully!"
+                : "Dark Mode Enable Successfully!",
+              { appearance: "success" }
+            );
+          }}
         >
           {mode ? <CiDark /> : <CiLight />}
         </button>
@@ -165,7 +233,6 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
       >
         Manufacturer
       </h2>
-
       <ManufacturerSection
         mode={mode}
         handleManufacturerSubmit={handleManufacturerSubmit}
@@ -180,6 +247,7 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
         address={address}
         setAddress={setAddress}
         setTransporter={setTransporter}
+        msgLoading={msgLoading}
       />
       <div className="mb-8">
         <h2
@@ -197,6 +265,7 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
           price={price}
           setPrice={setPrice}
           filteredMessages={filteredMessages}
+          resLoading={resLoading}
         />
       </div>
       <div>
@@ -255,40 +324,93 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
             placeholder="Search by From"
           />
         </div>
-        <div className="pr-2 pl-2">
-          {filteredMessages?.map((message, id) => (
-            <div key={id} className="border border-gray-300 rounded p-4 mb-4 ">
-              <h3
+        {loading ? (
+          <React.Fragment>
+            <div className="pr-2 pl-2">
+              <h2
                 className={`mb-1 font-bold  text-xl sm:text-xl tracking-wide ${
                   mode ? "text-white" : "text-gray-600"
                 }`}
               >
-                Order ID: {message.orderId}
-              </h3>
-              <p
-                className={`mb-1 text-xl sm:text-xl tracking-wide ${
-                  mode ? "text-white" : "text-gray-600"
-                }`}
-              >
-                To: {message.to}
-              </p>
-              <p
-                className={`mb-1 text-xl sm:text-xl tracking-wide ${
-                  mode ? "text-white" : "text-gray-600"
-                }`}
-              >
-                From: {message.from}
-              </p>
-              <p
-                className={`mb-1 text-xl sm:text-xl tracking-wide ${
-                  mode ? "text-white" : "text-gray-600"
-                }`}
-              >
-                Content: {message.content}
-              </p>
+                ManuFracturer
+              </h2>
+              {filteredMessages?.map((message, id) => (
+                <div
+                  key={id}
+                  className="border border-gray-300 rounded p-4 mb-4 "
+                >
+                  <h3
+                    className={`mb-1 font-bold  text-xl sm:text-xl tracking-wide ${
+                      mode ? "text-white" : "text-gray-600"
+                    }`}
+                  >
+                    Order ID: {message.orderId}
+                  </h3>
+                  <p
+                    className={`mb-1 text-xl sm:text-xl tracking-wide ${
+                      mode ? "text-white" : "text-gray-600"
+                    }`}
+                  >
+                    To: {message.to}
+                  </p>
+                  <p
+                    className={`mb-1 text-xl sm:text-xl tracking-wide ${
+                      mode ? "text-white" : "text-gray-600"
+                    }`}
+                  >
+                    From: {message.from}
+                  </p>
+                  <p
+                    className={`mb-1 text-xl sm:text-xl tracking-wide ${
+                      mode ? "text-white" : "text-gray-600"
+                    }`}
+                  >
+                    Content: {message.content}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+            <div className="pr-2 pl-2">
+              <h2
+                className={`mb-1 font-bold  text-xl sm:text-xl tracking-wide ${
+                  mode ? "text-white" : "text-gray-600"
+                }`}
+              >
+                Transporter
+              </h2>
+              {respData?.response?.map((response, id) => (
+                <div
+                  key={id}
+                  className="border border-gray-300 rounded p-4 mb-4 "
+                >
+                  <h3
+                    className={`mb-1 font-bold  text-xl sm:text-xl tracking-wide ${
+                      mode ? "text-white" : "text-gray-600"
+                    }`}
+                  >
+                    Order ID: {response.orderId}
+                  </h3>
+
+                  <p
+                    className={`mb-1 text-xl sm:text-xl tracking-wide ${
+                      mode ? "text-white" : "text-gray-600"
+                    }`}
+                  >
+                    Content: {response.content}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </React.Fragment>
+        ) : (
+          <div className="flex justify-center">
+            <CgSpinner
+              className={`animate-spin text-5xl ${
+                mode ? "text-white" : "text-indigo-700"
+              } `}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

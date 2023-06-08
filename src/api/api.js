@@ -1,11 +1,13 @@
 import axios from "axios";
 
 const BASE_URL = process.env.REACT_APP_SERVER_URL;
-console.log(BASE_URL);
+// console.log(BASE_URL);
 export const getMessage = async (messages) => {
   return await axios.get(`${BASE_URL}/messages`);
 };
-// export default getMessage;
+export const getResponse = async (messages) => {
+  return await axios.get(`${BASE_URL}/response`);
+};
 export const postMessage = async (data) => {
   return await axios.post(`${BASE_URL}/manufacturer/send`, data, {
     headers: {
@@ -29,13 +31,9 @@ export const registerUser = async (response) => {
   });
 };
 export const loginUser = async (response) => {
-  return await axios.post(
-    `https://goclock-backend-vaibhavs4.onrender.com/loginUser`,
-    response,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  return await axios.post(`${BASE_URL}/loginUser`, response, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 };

@@ -1,5 +1,5 @@
 import React from "react";
-
+import { CgSpinner } from "react-icons/cg";
 const TransporterSection = ({
   mode,
   handleTransporterSubmit,
@@ -8,6 +8,7 @@ const TransporterSection = ({
   price,
   setPrice,
   filteredMessages,
+  resLoading,
 }) => {
   return (
     <form onSubmit={handleTransporterSubmit} className="flex flex-wrap">
@@ -24,6 +25,7 @@ const TransporterSection = ({
           onChange={(e) => setResponseOrderId(e.target.value)}
           className="w-full border border-gray-300 rounded px-3 "
           style={{ padding: "9px 0px" }}
+          required
         >
           <option value="">Select Order ID</option>
           {filteredMessages?.map((message, id) => (
@@ -42,20 +44,31 @@ const TransporterSection = ({
           Price:
         </label>
         <input
-          type="text"
+          type="number"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           className="w-full border border-gray-300 rounded px-3 py-2"
           placeholder="Price"
+          required
         />
       </div>
       <div className="w-full pr-2 pl-2">
-        <button
-          type="submit"
-          className="bg-green-500 hover:bg-green-600 text-white rounded px-4 py-2"
-        >
-          Reply
-        </button>
+        {resLoading ? (
+          <button
+            type="submit"
+            className="bg-green-500 hover:bg-green-600 text-white rounded px-4 py-2 flex justify-center items-center "
+          >
+            <CgSpinner className="animate-spin text-xl" />
+            &nbsp; Reply
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="bg-green-500 hover:bg-green-600 text-white rounded px-4 py-2 "
+          >
+            Reply
+          </button>
+        )}
       </div>
     </form>
   );

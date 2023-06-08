@@ -2,9 +2,11 @@ import React from "react";
 import "./index.css";
 import Image from "../../assets/transport.jpg";
 import { useNavigate } from "react-router-dom";
-
+import { useToasts } from "react-toast-notifications";
 const LandingPage = ({ mode, setMode, CiDark, CiLight }) => {
+  const { addToast } = useToasts();
   const navigate = useNavigate();
+
   return (
     <div
       className={` ${
@@ -30,7 +32,15 @@ const LandingPage = ({ mode, setMode, CiDark, CiLight }) => {
               className={`${
                 mode ? " text-white" : "text-black"
               } text-5xl rounded-xl border-solid border-2`}
-              onClick={() => setMode(!mode)}
+              onClick={() => {
+                setMode(!mode);
+                addToast(
+                  mode
+                    ? "Light Mode Enable Successfully!"
+                    : "Dark Mode Enable Successfully!",
+                  { appearance: "success" }
+                );
+              }}
             >
               {mode ? <CiDark /> : <CiLight />}
             </button>
