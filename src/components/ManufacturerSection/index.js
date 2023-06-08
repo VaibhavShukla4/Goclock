@@ -1,5 +1,5 @@
 import React from "react";
-
+import { CgSpinner } from "react-icons/cg";
 const ManufacturerSection = ({
   mode,
   handleManufacturerSubmit,
@@ -15,6 +15,7 @@ const ManufacturerSection = ({
   setAddress,
   transporter,
   setTransporter,
+  msgLoading,
 }) => {
   return (
     <div className="mb-8">
@@ -33,6 +34,7 @@ const ManufacturerSection = ({
             onChange={(e) => setOrderId(e.target.value)}
             className="w-full border border-gray-300 rounded px-3 py-2"
             placeholder="Auto-populated code"
+            required
           />
         </div>
         <div className="w-full md:w-1/2 lg:w-1/4 mb-4 pr-2 pl-2">
@@ -49,6 +51,7 @@ const ManufacturerSection = ({
             onChange={(e) => setTo(e.target.value)}
             className="w-full border border-gray-300 rounded px-3 py-2"
             placeholder="Receiver"
+            required
           />
         </div>
         <div className="w-full md:w-1/2 lg:w-1/4 mb-4 pr-2 pl-2">
@@ -65,6 +68,7 @@ const ManufacturerSection = ({
             onChange={(e) => setFrom(e.target.value)}
             className="w-full border border-gray-300 rounded px-3 py-2"
             placeholder="Sender"
+            required
           />
         </div>
         <div className="w-full md:w-1/2 lg:w-1/4 mb-4 pr-2 pl-2">
@@ -80,6 +84,7 @@ const ManufacturerSection = ({
             onChange={(e) => setQuantity(e.target.value)}
             className="w-full border border-gray-300 rounded px-3 "
             style={{ padding: "9px 0px" }}
+            required
           >
             <option value="1">1 ton</option>
             <option value="2">2 ton</option>
@@ -100,6 +105,7 @@ const ManufacturerSection = ({
             onChange={(e) => setAddress(e.target.value)}
             className="w-full border border-gray-300 rounded px-3 py-2"
             placeholder="Auto-populated address"
+            required
           />
         </div>
         <div className="w-full md:w-1/2 lg:w-1/4 mb-4 pr-2 pl-2">
@@ -115,6 +121,7 @@ const ManufacturerSection = ({
             onChange={(e) => setTransporter(e.target.value)}
             className="w-full border border-gray-300 rounded px-3 "
             style={{ padding: "9px 0px" }}
+            required
           >
             <option value="">Select Transporter</option>
             <option value="Transporter A">Transporter A</option>
@@ -123,12 +130,22 @@ const ManufacturerSection = ({
           </select>
         </div>
         <div className="w-full pr-2 pl-2">
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2"
-          >
-            Send
-          </button>
+          {msgLoading ? (
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 flex justify-center items-center "
+            >
+              <CgSpinner className="animate-spin text-xl" />
+              &nbsp; Send
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 "
+            >
+              Send
+            </button>
+          )}
         </div>
       </form>
     </div>

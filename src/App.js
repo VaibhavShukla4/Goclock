@@ -7,7 +7,7 @@ import Account from "./pages/Account";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
-
+import { ToastProvider } from "react-toast-notifications";
 // this is for protected routes
 const ProtectedLayout = ({ children }) => {
   const auth = localStorage.getItem("auth_token");
@@ -24,61 +24,63 @@ const ProtectedLayout = ({ children }) => {
 function App() {
   const [mode, setMode] = useState(false);
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <LandingPage
-            setMode={setMode}
-            mode={mode}
-            CiDark={CiDark}
-            CiLight={CiLight}
-          />
-        }
-      />
-      <Route
-        path="/account/*"
-        element={
-          <ProtectedLayout>
-            <Account />
-          </ProtectedLayout>
-        }
-      >
+    <ToastProvider autoDismiss={true} autoDismissTimeout="2000">
+      <Routes>
         <Route
-          index
+          path="/"
           element={
-            <Home
+            <LandingPage
+              setMode={setMode}
               mode={mode}
               CiDark={CiDark}
               CiLight={CiLight}
-              setMode={setMode}
             />
           }
         />
-      </Route>
-      <Route
-        path="/login"
-        element={
-          <Login
-            setMode={setMode}
-            mode={mode}
-            CiDark={CiDark}
-            CiLight={CiLight}
+        <Route
+          path="/account/*"
+          element={
+            <ProtectedLayout>
+              <Account />
+            </ProtectedLayout>
+          }
+        >
+          <Route
+            index
+            element={
+              <Home
+                mode={mode}
+                CiDark={CiDark}
+                CiLight={CiLight}
+                setMode={setMode}
+              />
+            }
           />
-        }
-      />
-      <Route
-        path="/signup"
-        element={
-          <SignUp
-            setMode={setMode}
-            mode={mode}
-            CiDark={CiDark}
-            CiLight={CiLight}
-          />
-        }
-      />
-    </Routes>
+        </Route>
+        <Route
+          path="/login"
+          element={
+            <Login
+              setMode={setMode}
+              mode={mode}
+              CiDark={CiDark}
+              CiLight={CiLight}
+            />
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <SignUp
+              setMode={setMode}
+              mode={mode}
+              CiDark={CiDark}
+              CiLight={CiLight}
+            />
+          }
+        />
+      </Routes>
+    </ToastProvider>
   );
 }
 
