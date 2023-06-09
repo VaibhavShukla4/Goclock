@@ -360,13 +360,6 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
                   >
                     From: {message.from}
                   </p>
-                  <p
-                    className={`mb-1 text-xl sm:text-xl tracking-wide ${
-                      mode ? "text-white" : "text-gray-600"
-                    }`}
-                  >
-                    Content: {message.content}
-                  </p>
                 </div>
               ))}
             </div>
