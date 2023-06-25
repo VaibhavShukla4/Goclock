@@ -2,21 +2,30 @@ import axios from "axios";
 
 const BASE_URL = process.env.REACT_APP_SERVER_URL;
 // console.log(BASE_URL);
-export const getMessage = async (messages) => {
-  return await axios.get(`${BASE_URL}/messages`);
+export const getPost = async (messages) => {
+  return await axios.get(`${BASE_URL}/post`);
 };
-export const getResponse = async (messages) => {
-  return await axios.get(`${BASE_URL}/response`);
-};
-export const postMessage = async (data) => {
-  return await axios.post(`${BASE_URL}/manufacturer/send`, data, {
+
+export const postUpdate = async (id, data) => {
+  console.log(id, data);
+  return await axios.put(`${BASE_URL}/posts/${id}`, data, {
     headers: {
       "Content-Type": "application/json",
     },
   });
 };
-export const postResponse = async (response) => {
-  return await axios.post(`${BASE_URL}/transporter/response`, response, {
+
+export const sendPost = async (response) => {
+  return await axios.post(`${BASE_URL}/send-post`, response, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const postDelete = async (id) => {
+  console.log(id);
+  return await axios.delete(`${BASE_URL}/posts-delete/${id}`, {
     headers: {
       "Content-Type": "application/json",
     },
@@ -30,6 +39,7 @@ export const registerUser = async (response) => {
     },
   });
 };
+
 export const loginUser = async (response) => {
   return await axios.post(`${BASE_URL}/loginUser`, response, {
     headers: {

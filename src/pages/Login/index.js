@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import LoginImg from "../../assets/login.jpg";
 import SignUpImg from "../../assets/signup.jpg";
 import { useNavigate } from "react-router-dom";
-import { ROLE, AUTH_TOKEN_KEY } from "../../constant";
+import { AUTH_TOKEN_KEY } from "../../constant";
 import { loginUser } from "../../api/api";
 import { AiOutlineUser, AiOutlineLock } from "react-icons/ai";
 import { useToasts } from "react-toast-notifications";
@@ -168,7 +168,7 @@ const Login = ({ mode, setMode, CiDark, CiLight }) => {
                 {show ? " Already a member?" : "Not a member? "}&nbsp;&nbsp;
                 <span
                   className="mb-1 text-xl sm:text-xl tracking-wide cursor-pointer text-indigo-600"
-                  onClick={() => navigate("/signup")}
+                  onClick={() => navigate("/")}
                 >
                   {show ? "Login" : " Signup"}
                 </span>

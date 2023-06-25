@@ -2,13 +2,8 @@ import React, { useState } from "react";
 import LoginImg from "../../assets/login.jpg";
 import SignUpImg from "../../assets/signup.jpg";
 import { useNavigate } from "react-router-dom";
-import { ROLE } from "../../constant";
 import { registerUser } from "../../api/api";
-import {
-  AiOutlineUser,
-  AiOutlineLock,
-  AiOutlineUsergroupAdd,
-} from "react-icons/ai";
+import { AiOutlineUser, AiOutlineLock } from "react-icons/ai";
 import { useToasts } from "react-toast-notifications";
 let auth;
 
@@ -18,11 +13,9 @@ const SignUp = ({ mode, setMode, CiDark, CiLight }) => {
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState(ROLE.NONE); // Default role is set to manufacturer
   const [errors, setErrors] = useState({});
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [roleError, setRoleError] = useState("");
   const navigate = useNavigate();
 
   const validateEmail = (email) => {
@@ -35,17 +28,12 @@ const SignUp = ({ mode, setMode, CiDark, CiLight }) => {
     const passwordRegex = /^.{8,}$/;
     return passwordRegex.test(password);
   };
-  const validRoles = ["MANUFACTURER", "TRANSPORTER"];
-  const validateRole = (role) => {
-    return validRoles.includes(role.toUpperCase());
-  };
 
   const handleSignUp = (e) => {
     e.preventDefault();
     // Reset previous error messages
     setEmailError("");
     setPasswordError("");
-    setRoleError("");
     // Validate email
     if (!validateEmail(email)) {
       setEmailError("Please enter a valid email address");
@@ -57,11 +45,7 @@ const SignUp = ({ mode, setMode, CiDark, CiLight }) => {
       setPasswordError("Password should be at least 8 characters long");
       return;
     }
-    // validate Role
-    if (!validateRole(role)) {
-      setRoleError("Role should be manufracturer otherwise transporter");
-      return;
-    }
+
     const errors = {};
     if (!email) {
       errors.email = "Email is required";
@@ -69,19 +53,15 @@ const SignUp = ({ mode, setMode, CiDark, CiLight }) => {
     if (!password) {
       errors.password = "Password is required";
     }
-    if (!role) {
-      errors.role = "Role is required";
-    }
+
     if (Object.keys(errors).length === 0) {
       const newMessage = {
         email,
         password,
-        role,
       };
       setMessages([...messages, newMessage]);
       setEmail("");
       setPassword("");
-      setRole("");
       registerUser(newMessage)
         .then((response) => {
           addToast("SignUp Successfully!", { appearance: "success" });
@@ -211,48 +191,7 @@ const SignUp = ({ mode, setMode, CiDark, CiLight }) => {
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-col mb-6">
-                    <label
-                      htmlFor="role"
-                      className={`mb-1 text-xl sm:text-xl tracking-wide ${
-                        mode ? "text-white" : "text-gray-600"
-                      }`}
-                    >
-                      Role:
-                    </label>
-                    <div className="relative h-10">
-                      <div className="inline-flex items-center justify-center absolute left-0 top-0 h-11 w-10 text-gray-400">
-                        <AiOutlineUsergroupAdd fontSize={25} />
-                      </div>
-                      <select
-                        id="role"
-                        type="text"
-                        name="role"
-                        className={`text-sm sm:text-base placeholder-gray-500 pl-10 pr-4 rounded-lg   w-full py-2.5 focus:outline-none focus:border-blue-700 border-2 ${
-                          errors.role ? "border-red-500" : "border-gray-400"
-                        }`}
-                        placeholder="Role"
-                        value={role}
-                        onChange={(e) => setRole(e.target.value)}
-                      >
-                        <option value={ROLE.NONE}>Choose Role</option>
-                        <option value={ROLE.MANUFRACTURER}>Manufacturer</option>
-                        <option value={ROLE.TRANSPORTER}>Transporter</option>
-                      </select>
-                      {errors.role && (
-                        <p className="text-red-500 text-sm">{errors.role}</p>
-                      )}
-                      {roleError && (
-                        <p
-                          className={
-                            roleError ? "text-red-500" : "text-gray-400"
-                          }
-                        >
-                          {roleError}
-                        </p>
-                      )}
-                    </div>
-                  </div>
+
                   <div className="relative flex justify-center mt-4">
                     <button
                       className="text-white text-2xl italic rounded-md border-2 bg-gradient-to-r from-violet-600 to-blue-400 px-10  py-2 hover:bg-gradient-to-l from-blue-600 to-violet-400"

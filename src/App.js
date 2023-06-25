@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
 import { Routes, Route, Navigate } from "react-router-dom";
-import LandingPage from "./pages/LandingPage";
 import { CiDark, CiLight } from "react-icons/ci";
 import Account from "./pages/Account";
 import Home from "./pages/Home";
@@ -26,17 +25,6 @@ function App() {
   return (
     <ToastProvider autoDismiss={true} autoDismissTimeout="2000">
       <Routes>
-        <Route
-          path="/"
-          element={
-            <LandingPage
-              setMode={setMode}
-              mode={mode}
-              CiDark={CiDark}
-              CiLight={CiLight}
-            />
-          }
-        />
         <Route
           path="/account/*"
           element={
@@ -69,7 +57,7 @@ function App() {
           }
         />
         <Route
-          path="/signup"
+          path="/"
           element={
             <SignUp
               setMode={setMode}
