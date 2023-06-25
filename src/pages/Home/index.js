@@ -135,7 +135,6 @@ const Home = ({ mode, setMode, CiDark, CiLight }) => {
   };
 
   // Call the function to send the data
-
   const handleTransporterSubmit = async (e) => {
     e.preventDefault();
     setResLoading(true);
